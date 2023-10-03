@@ -4,7 +4,10 @@ const ModuleFederationPlugin = require("webpack/lib/container/ModuleFederationPl
 const deps = require("./package.json").dependencies;
 module.exports = (_, argv) => ({
   output: {
-    publicPath: "https://main--dynamic-dango-801b3a.netlify.app/",
+    publicPath:
+      argv.mode === "development"
+        ? "http://localhost:3000/"
+        : "https://main--dynamic-dango-801b3a.netlify.app/",
   },
 
   resolve: {
@@ -44,8 +47,11 @@ module.exports = (_, argv) => ({
       name: "host",
       filename: "remoteEntry.js",
       remotes: {
-        mfe_tasks:
-          "mfe_tasks@https://main--gleeful-licorice-557f16.netlify.app/remoteEntry.js",
+        mfe_tasks: `mfe_tasks@${
+          argv.mode === "development"
+            ? "http://localhost:3001/remoteEntry.js"
+            : "https://main--gleeful-licorice-557f16.netlify.app/remoteEntry.js"
+        }`,
       },
       exposes: {},
       shared: {
